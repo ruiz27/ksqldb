@@ -1,5 +1,5 @@
 
-# 🚀 Ejemplo Básico con ksqlDB
+# Ejemplo Básico con ksqlDB
 
 Este proyecto es un ejercicio sencillo para demostrar cómo crear un **stream** en ksqlDB a partir de un topic de Kafka y consultarlo en tiempo real.
 
@@ -10,7 +10,8 @@ Este proyecto es un ejercicio sencillo para demostrar cómo crear un **stream** 
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Inicio Rápido
+
+## 🚀 Inicio Rápido
 
 1. Creacion de directorio
 ```
@@ -25,7 +26,7 @@ sudo chown -R 1000:1000 ./kraft-data
 docker compose up -d
 ```
 
-## Acceso web
+## ⚙️ Acceso web
 
 Después de iniciar se puede acceder en:
 ```
@@ -36,7 +37,7 @@ http://localhost:9021/clusters
 
 * **Vamos a crear un topic llamado `users` donde se publicarán los datos de nuestros usuarios.**
 
-```
+``` 
 kafka-topics --create \
   --bootstrap-server localhost:9092 \
   --topic user \
