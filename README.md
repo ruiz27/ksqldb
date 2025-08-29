@@ -35,12 +35,12 @@ http://localhost:9021/clusters
 
 ## 🧵Creacion topic
 
-* **Vamos a crear un topic llamado `user` donde se publicarán los datos de nuestros usuarios.**
+* **Vamos a crear un topic llamado `rrss_topic` donde se publicarán los datos.**
 
 ``` 
 kafka-topics --create \
   --bootstrap-server localhost:9092 \
-  --topic user \
+  --topic rrss_topic \
   --partitions 1 \
   --replication-factor 1 \
   --config retention.ms=604800000  # 7 días
@@ -50,7 +50,7 @@ kafka-topics --create \
 
 ```
 kafka-configs --bootstrap-server localhost:9092 \
-  --entity-type topics --entity-name user \
+  --entity-type topics --entity-name rrss_topic \
   --describe  
 ```
 
@@ -76,7 +76,7 @@ Key:
 ```
 kafka-console-consumer \
   --bootstrap-server localhost:9092 \
-  --topic user \
+  --topic rrss_topic \
   --from-beginning
 ```
 
