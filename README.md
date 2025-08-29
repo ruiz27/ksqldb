@@ -5,7 +5,7 @@ Este proyecto es un ejercicio sencillo para demostrar cómo crear un **stream** 
 
 ---
 
-## 📋 Prerrequisitos
+## 📦 Prerrequisitos
 
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/install/)
@@ -26,16 +26,16 @@ sudo chown -R 1000:1000 ./kraft-data
 docker compose up -d
 ```
 
-## ⚙️ Acceso web
+## 🌐 Acceso a interfaz web
 
 Después de iniciar se puede acceder en:
 ```
 http://localhost:9021/clusters
 ```
 
-## Creacion topic
+## 🧵Creacion topic
 
-* **Vamos a crear un topic llamado `users` donde se publicarán los datos de nuestros usuarios.**
+* **Vamos a crear un topic llamado `user` donde se publicarán los datos de nuestros usuarios.**
 
 ``` 
 kafka-topics --create \
@@ -54,14 +54,15 @@ kafka-configs --bootstrap-server localhost:9092 \
   --describe  
 ```
 
-## Datos
+## 📥 Publicar Datos
 
-* Data de ejemplo para insertar en el topic
+* **Data de ejemplo para insertar en el topic**
 ``` json
 Value:
 {
   "id": 101,
-  "user": "alice"
+  "user": "alice",
+  "content": "hi"
 }
 
 Key:
@@ -69,9 +70,9 @@ Key:
   "id": 101
 }
 ```
-## Consumidor 
+## 📤 Consumidor 
 
-* Crea un consumidor para asegurar que los mensajes lleguen al broker
+* **Crea un consumidor para asegurar que los mensajes lleguen al broker**
 ```
 kafka-console-consumer \
   --bootstrap-server localhost:9092 \
@@ -79,23 +80,46 @@ kafka-console-consumer \
   --from-beginning
 ```
 
-## Stream
+## 🔄 Crear un Stream en KsqlDB
 
-* Dentro de la consola de ksqlDB, ejecuta el siguiente comando SQL:
+* **Dentro de la consola de ksqlDB, ejecuta el siguiente comando SQL:**
 
 ```
-CREATE STREAM user_stream (
-id INT,
-user STRING
-) WITH (
-kafka_topic = 'user',
-value_format = 'JSON',
-partitions = 1
+CREATE STREAM rrss_stream (
+  id INT,
+  user VARCHAR,
+  content VARCHAR
+) 
+WITH (
+  KAFKA_TOPIC = 'rrss_topic',
+  VALUE_FORMAT = 'JSON'
 );
 ```
 
+* **Verificación de datos del stream** 
+ ``` sql
+select * from rrss_stream EMIT CHANGES;
+```
 
-## Terminar el proceso
+## 📊 Crear una tabla agregada 
+* **Creacion de la tabla para agregar la información que pasa por el stream**
+``` sql 
+CREATE TABLE alice_counts_per_minute AS
+SELECT
+user,
+COUNT(*) AS alice_count
+FROM rrss_stream
+WINDOW TUMBLING (SIZE 1 MINUTE)
+WHERE user = 'alice'
+GROUP BY user;
+```
+
+* **Consultar resultado**
+``` sql
+SELECT * FROM alice_counts_per_minute EMIT CHANGES;
+```
+
+## 🛑 Terminar el proceso
 ```
 docker-compose down -v
 ```
